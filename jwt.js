@@ -40,7 +40,13 @@ module.exports = function (options) {
 	function verify(msg, done) {
 		var key = msg.key || options.key || options.publicKey;
 
-		jwt.verify(msg.token, key, {noTimestamp: true}, done);
+		jwt.verify(msg.token, key, {noTimestamp: true}, (err, payload) => {
+			if (err) {
+				done(null, { valid: false })
+			}
+
+			done(null, { valid: true, payload })
+		});
 	}
 
 	function decode(msg, done) {
