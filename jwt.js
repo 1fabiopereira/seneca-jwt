@@ -42,10 +42,22 @@ module.exports = function (options) {
 
 		jwt.verify(msg.token, key, {noTimestamp: true}, (err, payload) => {
 			if (err) {
-				done(null, { valid: false })
+				return done(null, { valid: false })
 			}
 
-			done(null, { valid: true, payload })
+			if (typeof payload === 'string') {
+				try {
+				    const email = payload.split(':')[0] || null
+				    const { token } = msg
+				    const data = { email, token }
+				    const valid = email ? true : false
+				    return done(null, { valid, payload: data })
+				} catch (error) {
+				    return done(null, { valid: false })
+				}
+			}
+
+			return done(null, { valid: true, payload })
 		});
 	}
 
