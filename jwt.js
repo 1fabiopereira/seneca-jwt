@@ -10,7 +10,7 @@ module.exports = function (options) {
 		key: options.key || null,
 		privateKey: options.privateKey || null,
 		publicKey: options.publicKey || null,
-		algorithm: options.algorithm || 'RS256'
+		algorithm: options.algorithm || 'HS256'
 	};
 
 	seneca.add({role: plugin, cmd: 'generateKey'}, generateKey);
