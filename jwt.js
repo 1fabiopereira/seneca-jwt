@@ -40,7 +40,7 @@ module.exports = function (options) {
 	function verify(msg, done) {
 		var key = msg.key || options.key || options.publicKey;
 
-		jwt.verify(msg.token, key, {noTimestamp: true}, (err, payload) => {
+		jwt.verify(msg.token, key, { noTimestamp: true }, (err, payload) => {
 			const decoded = jwt.decode(msg.token)
 			let tmp = null
 
@@ -67,6 +67,7 @@ module.exports = function (options) {
 			}
 
 			return done(null, { valid: true, payload })
+		})
 	}
 
 	function decode(msg, done) {
