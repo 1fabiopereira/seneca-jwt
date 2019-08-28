@@ -41,24 +41,32 @@ module.exports = function (options) {
 		var key = msg.key || options.key || options.publicKey;
 
 		jwt.verify(msg.token, key, {noTimestamp: true}, (err, payload) => {
+			const decoded = jwt.decode(msg.token)
+			let tmp = null
+
+			if (typeof decoded === 'string') {
+				tmp = decoded
+			}
+
+			if (typeof payload === 'string') {
+				tmp = payload
+			} 
+			
+			try {
+				const email = tmp.split(':')[0] || null
+				const { token } = msg
+				const data = { email, token }
+				const valid = email ? true : false
+				return done(null, { valid, payload: data })
+			} catch (error) {
+				return done(null, { valid: false })
+			}
+
 			if (err) {
 				return done(null, { valid: false })
 			}
 
-			if (typeof payload === 'string') {
-				try {
-				    const email = payload.split(':')[0] || null
-				    const { token } = msg
-				    const data = { email, token }
-				    const valid = email ? true : false
-				    return done(null, { valid, payload: data })
-				} catch (error) {
-				    return done(null, { valid: false })
-				}
-			}
-
 			return done(null, { valid: true, payload })
-		});
 	}
 
 	function decode(msg, done) {
