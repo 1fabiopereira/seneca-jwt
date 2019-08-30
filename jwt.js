@@ -46,22 +46,44 @@ module.exports = function (options) {
 
 			if (typeof decoded === 'string') {
 				tmp = decoded
+				try {
+					const email = tmp.split(':')[0] || null
+					const { token } = msg
+					const data = { email, token }
+					const valid = email ? true : false
+					return done(null, { valid, payload: data })
+				} catch (error) {
+					return done(null, { valid: false })
+				}
 			}
 
 			if (typeof payload === 'string') {
 				tmp = payload
-			} 
-			
-			try {
-				const email = tmp.split(':')[0] || null
-				const { token } = msg
-				const data = { email, token }
+				try {
+					const email = tmp.split(':')[0] || null
+					const { token } = msg
+					const data = { email, token }
+					const valid = email ? true : false
+					return done(null, { valid, payload: data })
+				} catch (error) {
+					return done(null, { valid: false })
+				}
+			}
+		
+			let email = null
+
+			if (typeof payload === 'object' && payload.hasOwnProperty('email')) {
+				email = payload.email
 				const valid = email ? true : false
-				return done(null, { valid, payload: data })
-			} catch (error) {
-				return done(null, { valid: false })
+				return done(null, { valid, payload: { email, token: msg.token } })
 			}
 
+			if (typeof decoded === 'object' && decoded.hasOwnProperty('email')) {
+				email = decoded.email
+				const valid = email ? true : false
+				return done(null, { valid, payload: { email, token: msg.token } })
+			}
+			
 			if (err) {
 				return done(null, { valid: false })
 			}
