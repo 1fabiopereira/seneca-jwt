@@ -72,13 +72,13 @@ module.exports = function (options) {
 		
 			let email = null
 
-			if (typeof payload === 'object' && payload.hasOwnProperty('email')) {
+			if (payload && typeof payload === 'object' && payload.hasOwnProperty('email')) {
 				email = payload.email
 				const valid = email ? true : false
 				return done(null, { valid, payload: { email, token: msg.token } })
 			}
 
-			if (typeof decoded === 'object' && decoded.hasOwnProperty('email')) {
+			if (decoded && typeof decoded === 'object' && decoded.hasOwnProperty('email')) {
 				email = decoded.email
 				const valid = email ? true : false
 				return done(null, { valid, payload: { email, token: msg.token } })
